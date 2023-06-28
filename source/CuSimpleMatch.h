@@ -29,6 +29,7 @@ class CuSimpleMatch
 		std::vector<std::string> back_;
 
 		void ParseRule_();
+		std::vector<std::string> ParseKey_(const std::string &text);
 };
 
 #endif
