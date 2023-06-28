@@ -193,7 +193,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 	constexpr char CHARSET_AZ[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	constexpr char CHARSET_az[] = "abcdefghijklmnopqrstuvwxyz";
 	constexpr char CHARSET_NUM[] = "0123456789";
-	const auto getCharSet = [](const std::string &str) -> std::string {
+	const auto getCharSet = [=](const std::string &str) -> std::string {
 		std::string charSet = "";
 		if (str == "Aa") {
 			charSet = CHARSET_A;
