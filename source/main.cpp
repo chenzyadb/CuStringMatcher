@@ -22,13 +22,19 @@ int main()
 	}
 	{
 		std::cout << "Test Match Middle:" << std::endl;
-		CuSimpleMatch matcher("^(lo, Wo)^;");
+		CuSimpleMatch matcher("*(lo, Wo)*;");
 		std::cout << (matcher.match("Hello, World!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("World, Hello!") ? "true" : "false") << std::endl;
 	}
 	{
 		std::cout << "Test Match Back:" << std::endl;
 		CuSimpleMatch matcher("(World!)^;");
+		std::cout << (matcher.match("Hello, World!") ? "true" : "false") << std::endl;
+		std::cout << (matcher.match("World, Hello!") ? "true" : "false") << std::endl;
+	}
+	{
+		std::cout << "Test Match Entire:" << std::endl;
+		CuSimpleMatch matcher("(Hello, World!);");
 		std::cout << (matcher.match("Hello, World!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("World, Hello!") ? "true" : "false") << std::endl;
 	}
@@ -41,14 +47,14 @@ int main()
 	}
 	{
 		std::cout << "Test Multi Rule:" << std::endl;
-		CuSimpleMatch matcher("(World!)^;^(test);");
+		CuSimpleMatch matcher("(World!)^;(test)*;");
 		std::cout << (matcher.match("Hello, World!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("test, hello!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("Hello, test!") ? "true" : "false") << std::endl;
 	}
 	{
 		std::cout << "Test charSet:" << std::endl;
-		CuSimpleMatch matcher("^([A-Z][0-9]);");
+		CuSimpleMatch matcher("([A-Z][0-9]);");
 		std::cout << (matcher.match("A0") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("B1") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("a9") ? "true" : "false") << std::endl;
@@ -64,7 +70,7 @@ int main()
 	{
 		std::cout << "std::vector & std::map support test." << std::endl;
 
-		CuSimpleMatch matcher = CuSimpleMatch("^(this|test)^;");
+		CuSimpleMatch matcher = CuSimpleMatch("*(this|test)*;");
 		std::cout << (matcher.match("this is test text") ? "true" : "false") << std::endl;
 
 		std::vector<CuSimpleMatch> testList{};

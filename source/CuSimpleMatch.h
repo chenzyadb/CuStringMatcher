@@ -14,10 +14,10 @@ class CuSimpleMatch
 		CuSimpleMatch(const CuSimpleMatch &other);
 		~CuSimpleMatch();
 		CuSimpleMatch &operator=(const CuSimpleMatch &other);
-		bool operator==(const CuSimpleMatch &other);
-		bool operator!=(const CuSimpleMatch &other);
-		bool operator<(const CuSimpleMatch &other);
-		bool operator>(const CuSimpleMatch &other);
+		bool operator==(const CuSimpleMatch &other) const;
+		bool operator!=(const CuSimpleMatch &other) const;
+		bool operator<(const CuSimpleMatch &other) const;
+		bool operator>(const CuSimpleMatch &other) const;
 
 		bool match(const std::string &text) const;
 		std::string data() const;
@@ -27,6 +27,7 @@ class CuSimpleMatch
 		std::vector<std::string> front_;
 		std::vector<std::string> middle_;
 		std::vector<std::string> back_;
+		std::vector<std::string> entire_;
 
 		void ParseRule_();
 		std::vector<std::string> ParseKey_(const std::string &text);
