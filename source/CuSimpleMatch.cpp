@@ -89,6 +89,11 @@ std::string CuSimpleMatch::data() const
 
 void CuSimpleMatch::ParseRule_()
 {
+	front_.clear();
+	middle_.clear();
+	back_.clear();
+	entire_.clear();
+
 	std::string key{};
 	std::vector<std::string> keySet{};
 	bool atKeySet = false, atFront = false, atBack = false;
