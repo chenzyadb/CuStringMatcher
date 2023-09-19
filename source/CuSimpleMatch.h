@@ -1,10 +1,27 @@
+// CuSimpleMatch V1 by chenzyadb.
+// Based on C++14 STL (MSVC).
+
 #ifndef _CU_SIMPLE_MATCH_H
 #define _CU_SIMPLE_MATCH_H
 
-#include <iostream>
-#include <stdexcept>
+#include <exception>
 #include <string>
 #include <vector>
+#include <memory>
+
+class MatchExcept : public std::exception
+{
+	public:
+		MatchExcept(const std::string &message) : message_(message) { }
+
+		const char* what() const noexcept override
+		{
+			return message_.c_str();
+		}
+
+	private:
+		const std::string message_;
+};
 
 class CuSimpleMatch
 {
@@ -29,7 +46,7 @@ class CuSimpleMatch
 		std::vector<std::string> back_;
 		std::vector<std::string> entire_;
 
-		void ParseRule_();
+		void UpdateRule_();
 		std::vector<std::string> ParseKey_(const std::string &text);
 };
 

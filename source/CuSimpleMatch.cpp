@@ -4,82 +4,72 @@ CuSimpleMatch::CuSimpleMatch() : rule_(), front_(), middle_(), back_(), entire_(
 
 CuSimpleMatch::CuSimpleMatch(const std::string &rule) : rule_(rule), front_(), middle_(), back_(), entire_()
 {
-	ParseRule_();
+	UpdateRule_();
 }
 
-CuSimpleMatch::CuSimpleMatch(const CuSimpleMatch &other) : rule_(), front_(), middle_(), back_(), entire_()
+CuSimpleMatch::CuSimpleMatch(const CuSimpleMatch &other) : rule_(other.data()), front_(), middle_(), back_(), entire_()
 {
-	rule_ = other.data();
-	ParseRule_();
+	UpdateRule_();
 }
 
 CuSimpleMatch::~CuSimpleMatch() { }
 
 CuSimpleMatch &CuSimpleMatch::operator=(const CuSimpleMatch &other)
 {
-	rule_ = other.data();
-	ParseRule_();
+	if (rule_ != other.data()) {
+		rule_ = other.data();
+		UpdateRule_();
+	}
 
 	return *this;
 }
 
 bool CuSimpleMatch::operator==(const CuSimpleMatch &other) const
 {
-	return rule_ == other.data();
+	return (rule_ == other.data());
 }
 
 bool CuSimpleMatch::operator!=(const CuSimpleMatch &other) const
 {
-	return rule_ != other.data();
+	return (rule_ != other.data());
 }
 
 bool CuSimpleMatch::operator<(const CuSimpleMatch &other) const
 {
-	return rule_ < other.data();
+	return (this < std::addressof(other));
 }
 
 bool CuSimpleMatch::operator>(const CuSimpleMatch &other) const
 {
-	return rule_ > other.data();
+	return (this > std::addressof(other));
 }
 
 bool CuSimpleMatch::match(const std::string &text) const
 {
-	bool match = false;
-	if (!match && front_.size() > 0) {
-		for (const auto &key : front_) {
-			if (text.find(key) == 0) {
-				match = true;
-				break;
-			}
+	if (text.empty()) {
+		return false;
+	}
+	for (const auto &key : front_) {
+		if (text.find(key) == 0) {
+			return true;
 		}
 	}
-	if (!match && middle_.size() > 0) {
-		for (const auto &key : middle_) {
-			if (text.find(key) != std::string::npos) {
-				match = true;
-				break;
-			}
+	for (const auto &key : middle_) {
+		if (text.find(key) != std::string::npos) {
+			return true;
 		}
 	}
-	if (!match && back_.size() > 0) {
-		for (const auto &key : back_) {
-			if (text.find(key) == text.size() - key.size()) {
-				match = true;
-				break;
-			}
+	for (const auto &key : back_) {
+		if (text.find(key) == (text.size() - key.size())) {
+			return true;
 		}
 	}
-	if (!match && entire_.size() > 0) {
-		for (const auto &key : entire_) {
-			if (text == key) {
-				match = true;
-				break;
-			}
+	for (const auto &key : entire_) {
+		if (text == key) {
+			return true;
 		}
 	}
-
-	return match;
+	return false;
 }
 
 std::string CuSimpleMatch::data() const
@@ -87,7 +77,7 @@ std::string CuSimpleMatch::data() const
 	return rule_;
 }
 
-void CuSimpleMatch::ParseRule_()
+void CuSimpleMatch::UpdateRule_()
 {
 	front_.clear();
 	middle_.clear();
@@ -111,7 +101,7 @@ void CuSimpleMatch::ParseRule_()
 				} else if (atBack && backChar == '\0') {
 					backChar = c;
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			case '*':
@@ -120,7 +110,7 @@ void CuSimpleMatch::ParseRule_()
 				} else if (atBack && backChar == '\0') {
 					backChar = c;
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			case '(':
@@ -128,7 +118,7 @@ void CuSimpleMatch::ParseRule_()
 					atKeySet = true;
 					atFront = false;
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			case '|':
@@ -139,7 +129,7 @@ void CuSimpleMatch::ParseRule_()
 						key.clear();
 					}
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			case ')':
@@ -152,7 +142,7 @@ void CuSimpleMatch::ParseRule_()
 					atKeySet = false;
 					atBack = true;
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			case ';':
@@ -169,7 +159,7 @@ void CuSimpleMatch::ParseRule_()
 					keySet.clear();
 					atBack = false;
 				} else {
-					throw std::runtime_error("Invalid Matching Rule.");
+					throw MatchExcept("Invalid Matching Rule.");
 				}
 				break;
 			default:
@@ -195,7 +185,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 				charSet += c;
 			}
 		} else {
-			throw std::runtime_error("Invalid Matching Rule.");
+			throw MatchExcept("Invalid Matching Rule.");
 		}
 		return charSet;
 	};
@@ -213,7 +203,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 						inBracket = true;
 						baseStr += '|';
 					} else {
-						throw std::runtime_error("Invalid Matching Rule.");
+						throw MatchExcept("Invalid Matching Rule.");
 					}
 					break;
 				case ']':
@@ -222,7 +212,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 						charSets.emplace_back(getCharSet(charSetStr));
 						charSetStr.clear();
 					} else {
-						throw std::runtime_error("Invalid Matching Rule.");
+						throw MatchExcept("Invalid Matching Rule.");
 					}
 					break;
 				default:
@@ -237,7 +227,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 		keys.emplace_back(baseStr);
 	}
 	if (charSets.size() > 0) {
-		int charSetIdx = 0;
+		size_t charSetIdx = 0;
 		while (charSetIdx < charSets.size()) {
 			auto prevKeys = keys;
 			keys.clear();

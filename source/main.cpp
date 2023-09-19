@@ -61,11 +61,12 @@ int main()
 	}
 	{
 		std::cout << "Test complex string:" << std::endl;
-		CuSimpleMatch matcher("^([Hh]ello, [Ii]'m [0-9][0-9]);(letter is [A-Z].)^;");
+		CuSimpleMatch matcher("^([Hh]ello, [Ii]'m [0-9][0-9] years old, my favorite letter is [A-Z].);");
 		std::cout << (matcher.match("Hello, I'm 18 years old, my favorite letter is G.") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("Hello, I'm 24 years old, my favorite letter is A.") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("hello, i'm 99 years old, my favorite letter is Z.") ? "true" : "false") << std::endl;
-		std::cout << (matcher.match("Hello, I'm 1 years old, my favorite letter is z.") ? "true" : "false") << std::endl;
+		std::cout << (matcher.match("Hello, I'm 18 years old, my favorite letter is z.") ? "true" : "false") << std::endl;
+		std::cout << (matcher.match("Hello, I'm 1 years old, my favorite letter is F.") ? "true" : "false") << std::endl;
 	}
 	{
 		std::cout << "std::vector & std::map support test." << std::endl;
@@ -79,6 +80,7 @@ int main()
 
 		std::map<int, CuSimpleMatch> testMap{};
 		testMap[123] = CuSimpleMatch("^(Hello);");
+		testMap[123] = CuSimpleMatch();
 		std::cout << testMap.at(123).data() << std::endl;
 	}
 
