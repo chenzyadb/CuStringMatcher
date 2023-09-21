@@ -7,9 +7,7 @@
 uint64_t GetTimeStampMs()
 {
 	auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-	uint64_t timestamp_ms = now_ms.time_since_epoch().count();
-
-	return timestamp_ms;
+	return now_ms.time_since_epoch().count();
 }
 
 int main()
@@ -67,6 +65,16 @@ int main()
 		std::cout << (matcher.match("hello, i'm 99 years old, my favorite letter is Z.") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("Hello, I'm 18 years old, my favorite letter is z.") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("Hello, I'm 1 years old, my favorite letter is F.") ? "true" : "false") << std::endl;
+	}
+	{
+		std::cout << "Test setRule & clear:" << std::endl;
+
+		CuSimpleMatch matcher{};
+		matcher.setRule("*(Hello)*;");
+		std::cout << (matcher.match("Hello India Mi Fans, do you like mi 4i?") ? "true" : "false") << std::endl;
+		matcher.clear();
+		std::cout << (matcher.match("Hello India Mi Fans, do you like mi 4i?") ? "true" : "false") << std::endl;
+		std::cout << matcher.data() << std::endl;
 	}
 	{
 		std::cout << "std::vector & std::map support test." << std::endl;

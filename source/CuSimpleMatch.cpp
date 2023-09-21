@@ -77,6 +77,23 @@ std::string CuSimpleMatch::data() const
 	return rule_;
 }
 
+void CuSimpleMatch::setRule(const std::string &rule)
+{
+	if (rule_ != rule) {
+		rule_ = rule;
+		UpdateRule_();
+	}
+}
+
+void CuSimpleMatch::clear()
+{
+	rule_.clear();
+	front_.clear();
+	middle_.clear();
+	back_.clear();
+	entire_.clear();
+}
+
 void CuSimpleMatch::UpdateRule_()
 {
 	front_.clear();
@@ -235,7 +252,7 @@ std::vector<std::string> CuSimpleMatch::ParseKey_(const std::string &text)
 				auto pos = prevKey.find("|");
 				if (pos != std::string::npos) {
 					for (const auto &c : charSets[charSetIdx]) {
-						std::string key = prevKey;
+						auto key = prevKey;
 						key[pos] = c;
 						keys.emplace_back(key);
 					}

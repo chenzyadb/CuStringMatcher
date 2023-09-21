@@ -38,6 +38,8 @@ class CuSimpleMatch
 
 		bool match(const std::string &text) const;
 		std::string data() const;
+		void setRule(const std::string &rule);
+		void clear();
 
 	private:
 		std::string rule_;
