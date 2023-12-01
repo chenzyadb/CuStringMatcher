@@ -133,12 +133,15 @@ class CuSimpleMatch
 			middle_.clear();
 			back_.clear();
 			entire_.clear();
+			if (rule_.empty()) {
+				return;
+			}
 
 			static const int RULE_FRONT = 0, RULE_CONTENT = 1, RULE_SET = 2, RULE_BACK = 3;
 			int curIndex = RULE_FRONT;
 			std::string ruleContent{};
 			bool matchFront = true, matchBack = true;
-			size_t pos = 0, len = rule_.length();
+			size_t pos = 0, len = rule_.size();
 			while (pos < len) {
 				switch (rule_[pos]) {
 					case '*':
@@ -202,7 +205,7 @@ class CuSimpleMatch
 		std::vector<std::string> ParseRuleContent_(const std::string &content)
 		{
 			std::vector<std::string> rules{};
-			size_t pos = 0, len = content.length();
+			size_t pos = 0, len = content.size();
 			while (pos < len) {
 				auto next_pos = content.find('|', pos);
 				if (next_pos == std::string::npos) {
@@ -223,7 +226,7 @@ class CuSimpleMatch
 		std::vector<std::string> ParseCharSet_(const std::string &str)
 		{
 			static const auto getCharSet = [](const std::string &str) -> std::string {
-				if (str.length() == 3 && str[1] == '-') {
+				if (str.size() == 3 && str[1] == '-') {
 					if ((str[0] >= '0' && str[0] <= '9' || str[0] >= 'A' && str[0] <= 'Z' || str[0] >= 'a' && str[0] <= 'z') &&
 						(str[2] >= '0' && str[2] <= '9' || str[2] >= 'A' && str[2] <= 'Z' || str[2] >= 'a' && str[2] <= 'z')) 
 					{
@@ -239,7 +242,7 @@ class CuSimpleMatch
 
 			std::vector<std::string> parsedRules(1, str);
 			size_t pos = 0;
-			while (pos < parsedRules[0].length()) {
+			while (pos < parsedRules[0].size()) {
 				auto set_begin = parsedRules[0].find('[');
 				auto set_end = parsedRules[0].find(']');
 				if (set_end != std::string::npos && set_begin < (set_end - 1)) {

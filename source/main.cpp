@@ -45,7 +45,7 @@ int main()
 	}
 	{
 		std::cout << "Test Multi Rule:" << std::endl;
-		CuSimpleMatch matcher("*(World!)|(test)*");
+		CuSimpleMatch matcher("*World!|test*");
 		std::cout << (matcher.match("Hello, World!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("test, hello!") ? "true" : "false") << std::endl;
 		std::cout << (matcher.match("Hello, test!") ? "true" : "false") << std::endl;
@@ -94,32 +94,38 @@ int main()
 
 	std::cout << "Speed Test:" << std::endl;
 	{
-		std::regex testRegex("^([Aa]pple|[Bb]anana|[Oo]range)|(good|tasty)$");
 		auto startTime = GetTimeStampMs();
 		for (int i = 0; i < 10000; i++) {
-			bool match = false;
-			match = std::regex_search("Apple is very good", testRegex);
-			match = std::regex_search("Banana is very good", testRegex);
-			match = std::regex_search("Orange is very good", testRegex);
-			match = std::regex_search("apple is very tasty", testRegex);
-			match = std::regex_search("banana is very tasty", testRegex);
-			match = std::regex_search("orange is very tasty", testRegex);
-			match = std::regex_search("Hello, World!!!", testRegex);
+			std::regex testRegex("^(Red|Orange|Yello|Green|Blue|Purple|White|Black|Grey|Gold|Silver)");
 		}
-		std::cout << "STL Regex use time: " << GetTimeStampMs() - startTime << " ms." << std::endl;
+		std::cout << "std::regex use time: " << GetTimeStampMs() - startTime << " ms." << std::endl;
 	}
 	{
-		CuSimpleMatch testMatch("([Aa]pple|[Bb]anana|[Oo]range)*|*(good|tasty)");
+		auto startTime = GetTimeStampMs();
+		for (int i = 0; i < 10000; i++) {
+			CuSimpleMatch testMatch("(Red|Orange|Yello|Green|Blue|Purple|White|Black|Grey|Gold|Silver)*");
+		}
+		std::cout << "CuSimpleMatch use time: " << GetTimeStampMs() - startTime << " ms." << std::endl;
+	}
+	{
+		std::regex testRegex("^The price of the shirt is [0-9] pounds");
 		auto startTime = GetTimeStampMs();
 		for (int i = 0; i < 10000; i++) {
 			bool match = false;
-			match = testMatch.match("Apple is very good");
-			match = testMatch.match("Banana is very good");
-			match = testMatch.match("Orange is very good");
-			match = testMatch.match("apple is very tasty");
-			match = testMatch.match("banana is very tasty");
-			match = testMatch.match("orange is very tasty");
-			match = testMatch.match("Hello, World!!!");
+			match = std::regex_search("The price of the shirt is 9 pounds 15 pence.", testRegex);
+			match = std::regex_search("The price of the shirt is 8 pounds 99 pence.", testRegex);
+			match = std::regex_search("The shirt is free.", testRegex);
+		}
+		std::cout << "std::regex_search use time: " << GetTimeStampMs() - startTime << " ms." << std::endl;
+	}
+	{
+		CuSimpleMatch testMatch("The price of the shirt is [0-9] pounds*");
+		auto startTime = GetTimeStampMs();
+		for (int i = 0; i < 10000; i++) {
+			bool match = false;
+			match = testMatch.match("The price of the shirt is 9 pounds 15 pence.");
+			match = testMatch.match("The price of the shirt is 8 pounds 99 pence.");
+			match = testMatch.match("The shirt is free.");
 		}
 		std::cout << "CuSimpleMatch use time: " << GetTimeStampMs() - startTime << " ms." << std::endl;
 	}
