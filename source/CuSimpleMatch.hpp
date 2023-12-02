@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstring>
 
 class MatchExcept : public std::exception
 {
@@ -70,28 +71,50 @@ class CuSimpleMatch
 			return (this > std::addressof(other));
 		}
 
-		bool match(const std::string &text) const
+		bool match(const std::string &str) const
 		{
-			if (text.empty() || rule_.empty()) {
+			static const auto matchFront = [](const std::string &s, const std::string &p) -> bool {
+				size_t len = p.size();
+				if (s.size() < len) {
+					return false;
+				}
+				return (memcmp(s.data(), p.data(), len) == 0);
+			};
+			static const auto matchBack = [](const std::string &s, const std::string &p) -> bool {
+				size_t s_len = s.size(), p_len = p.size();
+				if (s_len < p_len) {
+					return false;
+				}
+				return (memcmp(s.data() + (s_len - p_len), p.data(), p_len) == 0);
+			};
+			static const auto matchEntire = [](const std::string &s, const std::string &p) -> bool {
+				size_t len = p.size();
+				if (s.size() != len) {
+					return false;
+				}
+				return (memcmp(s.data(), p.data(), len) == 0);
+			};
+
+			if (str.empty()) {
 				return false;
 			}
-			for (const auto &key : front_) {
-				if (text.find(key) == 0) {
+			for (const auto &key : middle_) {
+				if (str.find(key) != std::string::npos) {
 					return true;
 				}
 			}
-			for (const auto &key : middle_) {
-				if (text.find(key) != std::string::npos) {
+			for (const auto &key : front_) {
+				if (matchFront(str, key)) {
 					return true;
 				}
 			}
 			for (const auto &key : back_) {
-				if (text.find(key) == (text.size() - key.size())) {
+				if (matchBack(str, key)) {
 					return true;
 				}
 			}
 			for (const auto &key : entire_) {
-				if (text == key) {
+				if (matchEntire(str, key)) {
 					return true;
 				}
 			}
