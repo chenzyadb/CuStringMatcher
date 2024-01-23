@@ -1,4 +1,4 @@
-# CuSimpleMatch
+# CuStringMatcher
 A simple string matching library.  
 ### Feature
 - Suitable for simple string matching scenarios.
