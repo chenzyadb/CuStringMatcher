@@ -313,4 +313,16 @@ namespace CU
 	};
 }
 
+namespace std
+{
+	template<>
+	struct hash<CU::StringMatcher>
+	{
+		size_t operator()(const CU::StringMatcher &val) const
+		{
+			return reinterpret_cast<size_t>(std::addressof(val));
+		}
+	};
+}
+
 #endif
