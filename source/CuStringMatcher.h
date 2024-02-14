@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <cstring>
+#include <cctype>
 
 namespace CU
 {
@@ -274,17 +275,16 @@ namespace CU
 			std::vector<std::string> ParseCharSet_(const std::string &str)
 			{
 				static const auto getCharSet = [](const std::string &str) -> std::string {
-					if (str.size() == 3 && str[1] == '-') {
-						if ((str[0] >= '0' && str[0] <= '9' || str[0] >= 'A' && str[0] <= 'Z' || str[0] >= 'a' && str[0] <= 'z') &&
-							(str[2] >= '0' && str[2] <= '9' || str[2] >= 'A' && str[2] <= 'Z' || str[2] >= 'a' && str[2] <= 'z')) {
-							std::string charSet{};
-							for (auto ch = str[0]; ch <= str[2]; ch++) {
-								charSet += ch;
-							}
-							return charSet;
+					if (str.size() == 3 && str[1] == '-' && isalnum(str[0]) != 0 && isalnum(str[2]) != 0) {
+						std::string charSet{};
+						for (auto ch = str[0]; ch <= str[2]; ch++) {
+							charSet += ch;
 						}
+						return charSet;
+					} else if (str.size() == 2 && isalnum(str[0]) != 0 && isalnum(str[1]) != 0) {
+						return str;
 					}
-					return str;
+					return {};
 				};
 
 				std::vector<std::string> parsedRules(1, str);
